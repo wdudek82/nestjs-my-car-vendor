@@ -14,11 +14,11 @@ export function Serialize(
 }
 
 export class SerializeInterceptor implements NestInterceptor {
-  constructor(private dto: any) {}
+  constructor(private dto: ClassConstructor<unknown>) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map((data) => {
+      map((data: unknown) => {
         return plainToClass(this.dto, data, {
           excludeExtraneousValues: true,
         });

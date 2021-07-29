@@ -20,6 +20,7 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -53,7 +54,6 @@ export class UsersController {
     this.usersService.remove(+id);
   }
 
-  @Serialize(UserDto)
   @Patch('/:id')
   updateUser(
     @Param('id') id: string,
