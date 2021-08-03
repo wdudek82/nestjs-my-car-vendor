@@ -18,24 +18,32 @@ import { User } from './models/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('/signup')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersService.create(
-      createUserDto.email,
-      createUserDto.password,
-    );
+    const { email, password } = createUserDto;
+    return await this.authService.signup(email, password);
+  }
+
+  @Post('/signin')
+  async signIn(@Body() createUserDto: CreateUserDto): Promise<User> {
+    const { email, password } = createUserDto;
+    return this.authService.signIn(email, password);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   async findUser(@Param('id') id: string): Promise<User> {
-    const user = await this.usersService.findOne(+id);
+    const user = await this.usersService.findById(+id);
     if (!user) {
       throw new NotFoundException('User not found');
     }

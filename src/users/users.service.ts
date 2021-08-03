@@ -12,11 +12,11 @@ export class UsersService {
     return this.repo.save(user);
   }
 
-  findOne(id: number): Promise<User> {
+  findById(id: number): Promise<User> {
     return this.repo.findOne(id);
   }
 
-  find(email: string): any {
+  find(email: string): Promise<User[]> {
     return this.repo.find({ email });
   }
 
