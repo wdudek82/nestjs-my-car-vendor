@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Session,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -27,6 +28,17 @@ export class UsersController {
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
+
+  @Get('/colors/:color')
+  setColor(@Param('color') color: string, @Session() session: any): void {
+    session.color = color;
+    console.log('set session color:', session.color);
+  }
+
+  @Get('/colors')
+  getColor(@Session() session: any) {
+    return session.color;
+  }
 
   @Post('/signup')
   async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
