@@ -74,7 +74,7 @@ export class UsersController {
     @Session() session: any,
   ): Promise<User> {
     const { email, password } = createUserDto;
-    const user = await this.authService.signIn(email, password);
+    const user = await this.authService.signin(email, password);
     session.userId = user.id;
     return user;
   }
