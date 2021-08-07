@@ -10,16 +10,17 @@ import {
   Patch,
   Post,
   Query,
-  Session,
-  UseInterceptors,
+  Session, UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { UsersService } from './users.service';
-import { User } from './models/user.entity';
+import { UsersService } from './services/users.service';
+import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dtos/user.dto';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -40,19 +41,44 @@ export class UsersController {
     return session.color;
   }
 
+  // @Get('/whoami')
+  // whoAmI(@Session() session: any) {
+  //   return this.usersService.findById(session.userId);
+  // }
+
+  @Get('/whoami')
+  @UseGuards(AuthGuard)
+  whoAmI(@CurrentUser() user: User) {
+    return user;
+  }
+
+  @Post('/signout')
+  signOut(@Session() session: any): void {
+    session.userId = null;
+  }
+
   @Post('/signup')
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
     const { email, password } = createUserDto;
-    return await this.authService.signup(email, password);
+    const user = await this.authService.signup(email, password);
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/signin')
-  async signIn(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async signIn(
+    @Body() createUserDto: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
     const { email, password } = createUserDto;
-    return this.authService.signIn(email, password);
+    const user = await this.authService.signIn(email, password);
+    session.userId = user.id;
+    return user;
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/:id')
   async findUser(@Param('id') id: string): Promise<User> {
     const user = await this.usersService.findById(+id);
@@ -62,7 +88,6 @@ export class UsersController {
     return user;
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   findAllUsers(@Query('email') email: string): Promise<User[]> {
     return this.usersService.find(email);
