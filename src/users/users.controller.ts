@@ -41,11 +41,6 @@ export class UsersController {
     return session.color;
   }
 
-  // @Get('/whoami')
-  // whoAmI(@Session() session: any) {
-  //   return this.usersService.findById(session.userId);
-  // }
-
   @Get('/whoami')
   @UseGuards(AuthGuard)
   whoAmI(@CurrentUser() user: User) {

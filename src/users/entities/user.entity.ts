@@ -18,17 +18,17 @@ export class User {
   @Column()
   password: string;
 
-  @AfterInsert()
-  logInsert(): void {
-    console.log('Inserted User with id', this.id);
-  }
-
-  @AfterRemove()
-  logRemove(): void {
-    console.log('Removed User with id', this.id);
-  }
-  @AfterUpdate()
-  logUpdate(): void {
-    console.log('Updated User with id', this.id);
-  }
+  // @AfterInsert()
+  // logInsert(): void {
+  //   console.log('Inserted User with id', this.id);
+  // }
+  //
+  // @AfterRemove()
+  // logRemove(): void {
+  //   console.log('Removed User with id', this.id);
+  // }
+  // @AfterUpdate()
+  // logUpdate(): void {
+  //   console.log('Updated User with id', this.id);
+  // }
 }
