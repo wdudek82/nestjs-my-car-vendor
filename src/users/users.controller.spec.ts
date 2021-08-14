@@ -3,7 +3,6 @@ import { UsersController } from './users.controller';
 import { UsersService } from './services/users.service';
 import { User } from './entities/user.entity';
 import { AuthService } from './services/auth.service';
-import { UpdateUserDto } from './dtos/update-user.dto';
 import { CreateUserDto } from './dtos/create-user.dto';
 
 describe('UsersController', () => {
