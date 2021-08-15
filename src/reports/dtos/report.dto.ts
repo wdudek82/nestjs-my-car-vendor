@@ -1,8 +1,11 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class ReportDto {
   @Expose()
   id: number;
+
+  @Expose()
+  approved: boolean;
 
   @Expose()
   price: number;
