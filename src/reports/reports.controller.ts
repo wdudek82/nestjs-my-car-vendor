@@ -27,8 +27,8 @@ export class ReportsController {
   constructor(private reportsService: ReportsService) {}
 
   @Get()
-  getEstimate(@Query() query: GetEstimateDto): Promise<User> | GetEstimateDto {
-    return query;
+  getEstimate(@Query() query: GetEstimateDto): Promise<{ price: number }> {
+    return this.reportsService.createEstimate(query);
   }
 
   @Get('')
