@@ -11,6 +11,11 @@ import { APP_PIPE } from '@nestjs/core';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieSession = require('cookie-session');
 
+enum Env {
+  DB_NAME = 'DB_NAME',
+  COOKIE_KEY = 'COOKIE_KEY',
+}
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,7 +27,7 @@ const cookieSession = require('cookie-session');
       useFactory: (config: ConfigService) => {
         return {
           type: 'sqlite',
-          database: config.get<string>('DB_NAME'),
+          database: config.get<string>(Env.DB_NAME),
           synchronize: true,
           entities: [User, Report],
         };
@@ -44,11 +49,13 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule {
+  constructor(private configService: ConfigService) {}
+
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(
         cookieSession({
-          keys: ['very.secret.key'],
+          keys: [this.configService.get(Env.COOKIE_KEY)],
         }),
       )
       .forRoutes('*');
